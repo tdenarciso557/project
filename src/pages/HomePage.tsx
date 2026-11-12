@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { CalendarCheck, ShieldCheck } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import type { LoadStatus, Notice, Slot } from '@/lib/types';
+import { SLOT_COLUMNS, toSlot, type SlotRow } from '@/lib/slots';
 import AvailableSlots from '@/components/home/AvailableSlots';
 import BookingModal from '@/components/home/BookingModal';
 import NoticeBoard from '@/components/home/NoticeBoard';
@@ -22,15 +23,14 @@ export default function HomePage() {
     }
     const { data, error } = await supabase
       .from('availability_slots')
-      .select('id, starts_at, booked')
-      .eq('booked', false)
+      .select(SLOT_COLUMNS)
       .gte('starts_at', new Date().toISOString())
       .order('starts_at', { ascending: true });
     if (error || !data) {
       setSlotsStatus('error');
       return;
     }
-    setSlots(data as Slot[]);
+    setSlots((data as unknown as SlotRow[]).map(toSlot));
     setSlotsStatus('ready');
   }, []);
 

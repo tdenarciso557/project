@@ -1,9 +1,16 @@
 export type LoadStatus = 'loading' | 'ready' | 'error';
 
+export interface Professor {
+  id: string;
+  name: string;
+}
+
 export interface Slot {
   id: string;
   starts_at: string;
   booked: boolean;
+  professor_id: string | null;
+  professor_name: string | null;
 }
 
 export interface Notice {

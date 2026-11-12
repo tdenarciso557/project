@@ -4,11 +4,13 @@ import { supabase } from '@/lib/supabase';
 import SlotManager from '@/components/admin/SlotManager';
 import AppointmentList from '@/components/admin/AppointmentList';
 import NoticeManager from '@/components/admin/NoticeManager';
+import ProfessorManager from '@/components/admin/ProfessorManager';
 
-type Tab = 'agenda' | 'avisos';
+type Tab = 'agenda' | 'professores' | 'avisos';
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'agenda', label: 'Agenda' },
+  { id: 'professores', label: 'Professores' },
   { id: 'avisos', label: 'Avisos' },
 ];
 
@@ -62,14 +64,14 @@ export default function AdminDashboard() {
           ))}
         </nav>
 
-        {tab === 'agenda' ? (
+        {tab === 'agenda' && (
           <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr]">
             <SlotManager refreshKey={refreshKey} onChanged={refresh} />
             <AppointmentList refreshKey={refreshKey} onChanged={refresh} />
           </div>
-        ) : (
-          <NoticeManager />
         )}
+        {tab === 'professores' && <ProfessorManager />}
+        {tab === 'avisos' && <NoticeManager />}
       </main>
     </div>
   );

@@ -3,8 +3,9 @@ import { CalendarDays, Lock, Trash2 } from 'lucide-react';
 import WeekNavigator from '@/components/WeekNavigator';
 import { supabase } from '@/lib/supabase';
 import { formatDayLabel, formatTime } from '@/lib/format';
-import type { Slot } from '@/lib/types';
-import { errorTextClass } from '@/lib/ui';
+import { SLOT_COLUMNS, toSlot, type SlotRow } from '@/lib/slots';
+import type { Professor, Slot } from '@/lib/types';
+import { errorTextClass, inputClass } from '@/lib/ui';
 import { getWeekRange } from '@/lib/week';
 
 interface SlotManagerProps {
@@ -14,6 +15,7 @@ interface SlotManagerProps {
 
 export default function SlotManager({ refreshKey, onChanged }: SlotManagerProps) {
   const [slots, setSlots] = useState<Slot[]>([]);
+  const [professors, setProfessors] = useState<Professor[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [weekOffset, setWeekOffset] = useState(0);
@@ -27,15 +29,19 @@ export default function SlotManager({ refreshKey, onChanged }: SlotManagerProps)
       setLoading(false);
       return;
     }
-    const { data, error } = await supabase
-      .from('availability_slots')
-      .select('id, starts_at, booked')
-      .gte('starts_at', new Date().toISOString())
-      .order('starts_at', { ascending: true });
-    if (error || !data) {
+    const [slotsResult, professorsResult] = await Promise.all([
+      supabase
+        .from('availability_slots')
+        .select(SLOT_COLUMNS)
+        .gte('starts_at', new Date().toISOString())
+        .order('starts_at', { ascending: true }),
+      supabase.from('professors').select('id, name').order('name', { ascending: true }),
+    ]);
+    if (slotsResult.error || !slotsResult.data || professorsResult.error || !professorsResult.data) {
       setLoadError(true);
     } else {
-      setSlots(data as Slot[]);
+      setSlots((slotsResult.data as unknown as SlotRow[]).map(toSlot));
+      setProfessors(professorsResult.data as Professor[]);
       setLoadError(false);
     }
     setLoading(false);
@@ -54,6 +60,19 @@ export default function SlotManager({ refreshKey, onChanged }: SlotManagerProps)
       }),
     [slots, startMs, endMs]
   );
+
+  async function handleAssignProfessor(slot: Slot, professorId: string) {
+    setActionError(null);
+    const { error } = await supabase
+      .from('availability_slots')
+      .update({ professor_id: professorId || null })
+      .eq('id', slot.id);
+    if (error) {
+      setActionError('Não foi possível definir o professor deste horário. Tente novamente.');
+      return;
+    }
+    onChanged();
+  }
 
   async function handleRemove(slot: Slot) {
     setActionError(null);
@@ -104,11 +123,27 @@ export default function SlotManager({ refreshKey, onChanged }: SlotManagerProps)
         <ul className="mt-4 divide-y divide-stone-100">
           {weekSlots.map((slot) => (
             <li key={slot.id} className="flex items-center justify-between gap-3 py-3">
-              <div>
+              <div className="min-w-0">
                 <p className="font-medium capitalize text-stone-900">{formatDayLabel(slot.starts_at)}</p>
                 <p className="text-sm text-stone-600">{formatTime(slot.starts_at)}</p>
+                <select
+                  value={slot.professor_id ?? ''}
+                  onChange={(event) => handleAssignProfessor(slot, event.target.value)}
+                  aria-label={`Professor do horário de ${formatTime(slot.starts_at)}`}
+                  disabled={professors.length === 0}
+                  className={`${inputClass} mt-2 py-1.5 text-sm`}
+                >
+                  <option value="">
+                    {professors.length === 0 ? 'Cadastre um professor primeiro' : 'Sem professor'}
+                  </option>
+                  {professors.map((professor) => (
+                    <option key={professor.id} value={professor.id}>
+                      {professor.name}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex shrink-0 items-center gap-3">
                 {slot.booked ? (
                   <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-900">
                     Reservado
