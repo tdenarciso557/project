@@ -19,18 +19,21 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900">
-      <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+      <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
           <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-700 text-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-sm">
               <CalendarCheck size={20} />
             </span>
-            <span className="font-semibold tracking-tight">Painel do administrador</span>
+            <div className="leading-tight">
+              <p className="font-semibold tracking-tight">Painel do administrador</p>
+              <p className="text-xs text-stone-500">Gerencie horários, pedidos e avisos</p>
+            </div>
           </div>
           <button
             type="button"
             onClick={() => supabase.auth.signOut()}
-            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-stone-600 transition hover:bg-stone-100 hover:text-stone-900"
+            className="inline-flex items-center gap-2 rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm font-medium text-stone-700 shadow-sm transition hover:border-stone-300 hover:bg-stone-100 hover:text-stone-900"
           >
             <LogOut size={16} /> Sair
           </button>
@@ -38,17 +41,20 @@ export default function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-        <nav className="mb-8 flex gap-2 border-b border-stone-200" aria-label="Seções">
+        <nav
+          className="mb-8 inline-flex gap-1 rounded-xl border border-stone-200 bg-white p-1 shadow-sm"
+          aria-label="Seções"
+        >
           {TABS.map((item) => (
             <button
               key={item.id}
               type="button"
               onClick={() => setTab(item.id)}
               aria-current={tab === item.id ? 'page' : undefined}
-              className={`-mb-px border-b-2 px-4 py-3 text-sm font-medium transition ${
+              className={`rounded-lg px-5 py-2 text-sm font-medium transition duration-200 ${
                 tab === item.id
-                  ? 'border-emerald-700 text-emerald-800'
-                  : 'border-transparent text-stone-600 hover:text-stone-900'
+                  ? 'bg-emerald-700 text-white shadow-sm'
+                  : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
               }`}
             >
               {item.label}

@@ -42,13 +42,14 @@ export default function NoticeBoard({ notices, status, onRetry }: NoticeBoardPro
       {notices.map((notice) => (
         <li
           key={notice.id}
-          className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+          className="relative overflow-hidden rounded-2xl border border-stone-200 bg-white p-5 pl-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md"
         >
+          <span className="absolute inset-y-0 left-0 w-1 bg-emerald-600" aria-hidden="true" />
           <p className="text-xs font-medium uppercase tracking-wide text-stone-500">
             {formatDateTime(notice.created_at)}
           </p>
-          <h3 className="mt-1 text-lg font-semibold text-stone-900">{notice.title}</h3>
-          <p className="mt-2 whitespace-pre-line text-stone-700">{notice.body}</p>
+          <h3 className="mt-1.5 text-lg font-semibold leading-snug text-stone-900">{notice.title}</h3>
+          <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-stone-700">{notice.body}</p>
         </li>
       ))}
     </ul>

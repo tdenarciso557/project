@@ -59,18 +59,21 @@ export default function AvailableSlots({ slots, status, onRetry, onSelect }: Ava
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       <WeekNavigator weekOffset={weekOffset} onChange={setWeekOffset} />
       {groups.map(([day, daySlots]) => (
         <div key={day}>
-          <h3 className="mb-3 text-sm font-semibold capitalize text-stone-700">{day}</h3>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+          <div className="mb-3 flex items-center gap-3">
+            <h3 className="text-sm font-semibold capitalize text-stone-800">{day}</h3>
+            <span className="h-px flex-1 bg-stone-200" />
+          </div>
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4">
             {daySlots.map((slot) => (
               <button
                 key={slot.id}
                 type="button"
                 onClick={() => onSelect(slot)}
-                className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm font-medium text-emerald-900 transition hover:-translate-y-0.5 hover:border-emerald-700 hover:bg-emerald-700 hover:text-white hover:shadow-md"
+                className="rounded-xl border border-stone-200 bg-white px-3 py-3 text-sm font-medium text-stone-800 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-600 hover:bg-emerald-700 hover:text-white hover:shadow-md active:translate-y-0 active:scale-[0.98]"
               >
                 {formatTime(slot.starts_at)}
               </button>

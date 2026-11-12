@@ -55,31 +55,41 @@ export default function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-stone-50 text-stone-900">
-      <header className="border-b border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-4 sm:px-6">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-700 text-white">
+      <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-white/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3.5 sm:px-6">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-sm">
             <CalendarCheck size={20} />
           </span>
-          <span className="text-lg font-semibold tracking-tight">Agendamento Online</span>
+          <div className="leading-tight">
+            <p className="text-base font-semibold tracking-tight">Agendamento Online</p>
+            <p className="text-xs text-stone-500">Marque seu horário em poucos cliques</p>
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
-        <section className="mb-10 max-w-2xl">
-          <h1 className="text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
-            Escolha o melhor horário para você
-          </h1>
-          <p className="mt-3 text-base leading-relaxed text-stone-600">
-            Veja os horários disponíveis, selecione um deles e confirme seu agendamento em poucos segundos.
-          </p>
+      <main className="flex-1">
+        <section className="border-b border-stone-200 bg-white">
+          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-800">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" /> Agenda aberta
+            </span>
+            <h1 className="mt-5 max-w-2xl text-4xl font-semibold leading-[1.15] tracking-tight text-stone-900 sm:text-5xl">
+              Escolha o melhor horário para você
+            </h1>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-stone-600 sm:text-lg">
+              Veja os horários disponíveis, selecione um deles e confirme seu agendamento em poucos segundos.
+            </p>
+          </div>
         </section>
 
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
-          <section aria-labelledby="slots-title">
-            <h2 id="slots-title" className="mb-5 text-xl font-semibold tracking-tight">
-              Horários disponíveis
-            </h2>
-            <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[1.5fr_1fr] lg:gap-10">
+          <section aria-labelledby="slots-title" className="min-w-0">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 id="slots-title" className="text-xl font-semibold tracking-tight">
+                Horários disponíveis
+              </h2>
+            </div>
+            <div className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm sm:p-7">
               <AvailableSlots
                 slots={slots}
                 status={slotsStatus}
@@ -89,20 +99,23 @@ export default function HomePage() {
             </div>
           </section>
 
-          <section aria-labelledby="notices-title">
-            <h2 id="notices-title" className="mb-5 text-xl font-semibold tracking-tight">
-              Avisos
-            </h2>
+          <section aria-labelledby="notices-title" className="min-w-0">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 id="notices-title" className="text-xl font-semibold tracking-tight">
+                Avisos
+              </h2>
+            </div>
             <NoticeBoard notices={notices} status={noticesStatus} onRetry={loadNotices} />
           </section>
         </div>
       </main>
 
       <footer className="border-t border-stone-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-end px-4 py-5 sm:px-6">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-sm text-stone-500 sm:flex-row sm:px-6">
+          <p>Agendamento Online</p>
           <a
             href="/admin"
-            className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 transition hover:text-emerald-700"
+            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 font-medium text-stone-600 transition hover:bg-stone-100 hover:text-emerald-800"
           >
             <ShieldCheck size={16} /> Área do administrador
           </a>
